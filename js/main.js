@@ -254,9 +254,26 @@ glassCards.forEach(card => {
   card.addEventListener('mouseleave', () => hoveredCards.delete(card));
 });
 
-// Patch checkReveals to run parallax in the existing animation loop
+// ========== HIDE FAB ON CONTACT SECTION ==========
+const fabWhatsapp = document.querySelector('.fab-whatsapp');
+const closingPanel = document.getElementById('contacto');
+
+function updateFabVisibility() {
+  if (!fabWhatsapp || !closingPanel) return;
+  const rect = closingPanel.getBoundingClientRect();
+  if (rect.left < window.innerWidth && rect.right > 0) {
+    fabWhatsapp.style.opacity = '0';
+    fabWhatsapp.style.pointerEvents = 'none';
+  } else {
+    fabWhatsapp.style.opacity = '';
+    fabWhatsapp.style.pointerEvents = '';
+  }
+}
+
+// Patch checkReveals to run parallax + fab visibility in the existing animation loop
 const _origCheckReveals = checkReveals;
 checkReveals = function() {
   _origCheckReveals();
   updateCardParallax();
+  updateFabVisibility();
 };

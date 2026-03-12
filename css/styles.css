@@ -122,7 +122,7 @@ img {
   position: fixed;
   inset: 0;
   z-index: -1;
-  width: 1600vw;
+  width: 1800vw;
   height: 100vh;
   background: linear-gradient(
     90deg,
@@ -528,6 +528,25 @@ img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center 25%;
+  transform: scale(1.45);
+  filter: saturate(0.85) contrast(1.05) brightness(1.02);
+  transition: filter 0.6s ease, transform 0.6s ease;
+}
+
+.about-photo:hover img {
+  filter: saturate(1) contrast(1.05) brightness(1.02);
+  transform: scale(1.5);
+}
+
+/* Soft gradient overlay on photo edges */
+.about-photo::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(180deg, transparent 60%, rgba(123, 174, 127, 0.15) 100%);
+  pointer-events: none;
 }
 
 .about-photo-placeholder {
@@ -702,6 +721,97 @@ img {
   letter-spacing: 0.3em;
   color: var(--text-light);
   font-weight: 300;
+}
+
+/* ========== PANEL: TESTIMONIALS ========== */
+.panel-testimonials {
+  min-width: 140vw;
+  text-align: center;
+}
+
+.testimonials-content {
+  max-width: 1200px;
+  width: 100%;
+  padding: 0 4rem;
+}
+
+.testimonials-label {
+  font-family: 'Jost', sans-serif;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.4em;
+  color: var(--rose);
+  margin-bottom: 0.8rem;
+  font-weight: 300;
+}
+
+.testimonials-title {
+  font-size: clamp(2rem, 4vw, 3rem);
+  margin-bottom: 3rem;
+  letter-spacing: 0.04em;
+}
+
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  text-align: left;
+}
+
+.testimonial-card {
+  padding: 2.5rem 2rem !important;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.testimonial-text {
+  font-family: 'Jost', sans-serif;
+  font-size: 0.95rem;
+  font-style: italic;
+  color: var(--text-mid);
+  line-height: 1.85;
+  font-weight: 300;
+}
+
+.testimonial-author {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.testimonial-initial {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--lilac-soft), var(--rose-soft));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Cinzel', serif;
+  font-size: 0.8rem;
+  color: var(--text-dark);
+  flex-shrink: 0;
+}
+
+.testimonial-name {
+  display: block;
+  font-family: 'Cinzel', serif;
+  font-size: 0.8rem;
+  color: var(--text-dark);
+  letter-spacing: 0.03em;
+}
+
+.testimonial-service {
+  display: block;
+  font-family: 'Jost', sans-serif;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--text-light);
+  font-weight: 300;
+  margin-top: 0.15rem;
 }
 
 /* ========== PANELS: SERVICES ========== */
@@ -884,6 +994,116 @@ img {
   font-weight: 300;
 }
 
+/* Service number */
+.svc-number {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 2.2rem;
+  letter-spacing: 0.05em;
+  color: var(--text-light);
+  opacity: 0.12;
+  display: block;
+  margin-bottom: 0.4rem;
+  line-height: 1;
+}
+
+/* Service CTA */
+.svc-cta {
+  display: inline-block;
+  font-family: 'Jost', sans-serif;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--gold-deep);
+  margin-top: 1.5rem;
+  padding: 0.55rem 1.6rem;
+  border: 1px solid var(--gold-soft);
+  border-radius: 50px;
+  transition: all 0.4s ease;
+  font-weight: 400;
+}
+
+.svc-cta:hover {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--white-pure);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(201, 169, 110, 0.3);
+}
+
+/* Service category tag */
+.svc-tag {
+  display: inline-block;
+  font-family: 'Jost', sans-serif;
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  padding: 0.3rem 0.8rem;
+  border-radius: 50px;
+  margin-bottom: 1.2rem;
+  font-weight: 400;
+}
+
+.svc-tag--spiritual {
+  background: rgba(201, 184, 219, 0.2);
+  color: var(--lilac-deep);
+  border: 1px solid rgba(201, 184, 219, 0.3);
+}
+
+.svc-tag--energetic {
+  background: rgba(201, 169, 110, 0.15);
+  color: var(--gold-deep);
+  border: 1px solid rgba(201, 169, 110, 0.25);
+}
+
+.svc-tag--body {
+  background: rgba(123, 174, 127, 0.15);
+  color: var(--green-deep);
+  border: 1px solid rgba(123, 174, 127, 0.25);
+}
+
+/* Service intro categories */
+.service-categories {
+  display: flex;
+  gap: 0.8rem;
+  justify-content: center;
+  margin-top: 1.8rem;
+  flex-wrap: wrap;
+}
+
+.svc-cat {
+  font-family: 'Jost', sans-serif;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  padding: 0.4rem 1rem;
+  border-radius: 50px;
+  font-weight: 400;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.svc-cat:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.svc-cat--spiritual {
+  background: rgba(201, 184, 219, 0.25);
+  color: var(--lilac-deep);
+  border: 1px solid rgba(201, 184, 219, 0.35);
+}
+
+.svc-cat--energetic {
+  background: rgba(201, 169, 110, 0.2);
+  color: var(--gold-deep);
+  border: 1px solid rgba(201, 169, 110, 0.3);
+}
+
+.svc-cat--body {
+  background: rgba(123, 174, 127, 0.2);
+  color: var(--green-deep);
+  border: 1px solid rgba(123, 174, 127, 0.3);
+}
+
 /* ========== PANEL: CLOSING (Contact + Footer fused) ========== */
 .panel-closing {
   min-width: 100vw;
@@ -1062,6 +1282,60 @@ img {
   color: var(--gold-deep);
 }
 
+/* ========== FLOATING WHATSAPP CTA ========== */
+.fab-whatsapp {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 200;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #25D366;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow:
+    0 4px 16px rgba(37, 211, 102, 0.35),
+    0 2px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1),
+              box-shadow 0.3s ease;
+  opacity: 0;
+  animation: fabIn 0.6s ease 3s forwards;
+}
+
+.fab-whatsapp:hover {
+  transform: scale(1.1) translateY(-2px);
+  box-shadow:
+    0 6px 24px rgba(37, 211, 102, 0.45),
+    0 3px 10px rgba(0, 0, 0, 0.12);
+}
+
+.fab-whatsapp:active {
+  transform: scale(0.95);
+}
+
+/* Subtle pulse ring */
+.fab-whatsapp::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 2px solid rgba(37, 211, 102, 0.3);
+  animation: fabPulse 2.5s ease-in-out infinite;
+}
+
+@keyframes fabIn {
+  from { opacity: 0; transform: translateY(20px) scale(0.8); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes fabPulse {
+  0%, 100% { transform: scale(1); opacity: 0.6; }
+  50% { transform: scale(1.15); opacity: 0; }
+}
+
 /* ========== MOBILE: VERTICAL FALLBACK ========== */
 @media (max-width: 768px) {
   html, body {
@@ -1107,7 +1381,15 @@ img {
 
   .panel-about { min-width: 100%; }
   .panel-philosophy { min-width: 100%; }
+  .panel-testimonials { min-width: 100%; }
   .panel-service, .panel-service-intro { min-width: 100%; }
+
+  .testimonials-content { padding: 0 1rem; }
+
+  .testimonials-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
   .panel-closing { min-width: 100%; min-height: 100vh; }
 
   .svc-align-left,
@@ -1158,4 +1440,25 @@ img {
   .hero-scroll-hint { display: none; }
 
   .nav-progress { display: none; }
+
+  .fab-whatsapp {
+    bottom: 1.2rem;
+    right: 1.2rem;
+    width: 50px;
+    height: 50px;
+  }
+
+  .svc-align-left .svc-number,
+  .svc-align-right .svc-number {
+    text-align: center;
+  }
+
+  .svc-align-left .service-line,
+  .svc-align-right .service-line {
+    margin: 0 auto 1.5rem;
+  }
+
+  .service-categories {
+    gap: 0.5rem;
+  }
 }
