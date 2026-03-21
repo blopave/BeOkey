@@ -254,6 +254,117 @@ glassCards.forEach(card => {
   card.addEventListener('mouseleave', () => hoveredCards.delete(card));
 });
 
+// ========== CUSTOM CURSOR ==========
+const cursor = document.getElementById('cursor');
+const cursorDot = cursor.querySelector('.cursor-dot');
+const cursorRing = cursor.querySelector('.cursor-ring');
+
+let cursorX = 0, cursorY = 0;
+let ringX = 0, ringY = 0;
+
+// Track mouse position
+document.addEventListener('mousemove', (e) => {
+  cursorX = e.clientX;
+  cursorY = e.clientY;
+  // Dot follows instantly
+  cursorDot.style.left = cursorX + 'px';
+  cursorDot.style.top = cursorY + 'px';
+});
+
+// Ring follows with smooth lerp
+function animateCursor() {
+  ringX = lerp(ringX, cursorX, 0.15);
+  ringY = lerp(ringY, cursorY, 0.15);
+  cursorRing.style.left = ringX + 'px';
+  cursorRing.style.top = ringY + 'px';
+  requestAnimationFrame(animateCursor);
+}
+if (!isMobile()) requestAnimationFrame(animateCursor);
+
+// Hover states
+const interactiveEls = document.querySelectorAll('a, button, .svc-cta, .svc-cat, .fab-whatsapp');
+const textEls = document.querySelectorAll('p, h1, h2, h3, span');
+
+interactiveEls.forEach(el => {
+  el.addEventListener('mouseenter', () => {
+    cursor.classList.add('is-hover');
+    cursor.classList.remove('is-text');
+  });
+  el.addEventListener('mouseleave', () => cursor.classList.remove('is-hover'));
+});
+
+textEls.forEach(el => {
+  el.addEventListener('mouseenter', () => {
+    if (!cursor.classList.contains('is-hover')) {
+      cursor.classList.add('is-text');
+    }
+  });
+  el.addEventListener('mouseleave', () => cursor.classList.remove('is-text'));
+});
+
+// Hide cursor when mouse leaves window
+document.addEventListener('mouseleave', () => {
+  cursor.style.opacity = '0';
+});
+document.addEventListener('mouseenter', () => {
+  cursor.style.opacity = '1';
+});
+
+// ========== DYNAMIC PALETTE ==========
+const paletteOverlay = document.getElementById('palette-overlay');
+const servicePanels = document.querySelectorAll('.panel-service');
+
+function detectServiceCategory() {
+  if (isMobile()) return;
+
+  let activePalette = null;
+
+  servicePanels.forEach(panel => {
+    const rect = panel.getBoundingClientRect();
+    const centerX = window.innerWidth / 2;
+    if (rect.left < centerX && rect.right > centerX) {
+      const tag = panel.querySelector('.svc-tag');
+      if (tag) {
+        if (tag.classList.contains('svc-tag--spiritual')) activePalette = 'palette-spiritual';
+        else if (tag.classList.contains('svc-tag--energetic')) activePalette = 'palette-energetic';
+        else if (tag.classList.contains('svc-tag--body')) activePalette = 'palette-body';
+      }
+    }
+  });
+
+  paletteOverlay.classList.remove('palette-spiritual', 'palette-energetic', 'palette-body');
+  if (activePalette) {
+    paletteOverlay.classList.add('active', activePalette);
+  } else {
+    paletteOverlay.classList.remove('active');
+  }
+}
+
+// ========== PHILOSOPHY QUOTE WORD REVEAL ==========
+const quoteEl = document.querySelector('.philosophy-quote');
+if (quoteEl) {
+  const originalText = quoteEl.textContent;
+  const words = originalText.split(/\s+/);
+  quoteEl.innerHTML = words.map((word, i) =>
+    `<span class="word" style="transition-delay: ${i * 0.06}s">${word}</span>`
+  ).join(' ');
+
+  function checkQuoteReveal() {
+    const rect = quoteEl.getBoundingClientRect();
+    if (rect.left < window.innerWidth * 0.75 && rect.right > 0) {
+      quoteEl.classList.add('words-visible');
+    }
+  }
+
+  // Patch into animation loop
+  const _prevCheckReveals = checkReveals;
+  checkReveals = function() {
+    _prevCheckReveals();
+    checkQuoteReveal();
+    detectServiceCategory();
+  };
+}
+
 // ========== HIDE FAB ON CONTACT SECTION ==========
 const fabWhatsapp = document.querySelector('.fab-whatsapp');
 const closingPanel = document.getElementById('contacto');

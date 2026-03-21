@@ -60,6 +60,117 @@ img {
   color: var(--text-dark);
 }
 
+/* ========== CUSTOM CURSOR ========== */
+.cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  pointer-events: none;
+  mix-blend-mode: difference;
+}
+
+.cursor-dot {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--white-pure);
+  transform: translate(-50%, -50%);
+  transition: width 0.3s ease, height 0.3s ease, opacity 0.3s ease;
+}
+
+.cursor-ring {
+  position: absolute;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  transform: translate(-50%, -50%);
+  transition: width 0.4s cubic-bezier(0.23, 1, 0.32, 1),
+              height 0.4s cubic-bezier(0.23, 1, 0.32, 1),
+              border-color 0.3s ease,
+              background 0.3s ease;
+}
+
+/* Cursor grows on interactive elements */
+.cursor.is-hover .cursor-ring {
+  width: 56px;
+  height: 56px;
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.9);
+}
+
+.cursor.is-hover .cursor-dot {
+  width: 4px;
+  height: 4px;
+  opacity: 0.5;
+}
+
+/* Cursor accent on text elements */
+.cursor.is-text .cursor-ring {
+  width: 4px;
+  height: 4px;
+  background: var(--white-pure);
+  border-color: transparent;
+}
+
+.cursor.is-text .cursor-dot {
+  opacity: 0;
+}
+
+/* Hide custom cursor on mobile/touch */
+@media (max-width: 768px), (hover: none) {
+  .cursor { display: none; }
+}
+
+/* Hide default cursor on desktop */
+@media (hover: hover) {
+  *, *::before, *::after {
+    cursor: none !important;
+  }
+}
+
+/* ========== DYNAMIC PALETTE OVERLAY ========== */
+.palette-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 1.2s ease, background 1.2s ease;
+}
+
+.palette-overlay.active {
+  opacity: 1;
+}
+
+.palette-overlay.palette-spiritual {
+  background: radial-gradient(ellipse at 50% 50%, rgba(201, 184, 219, 0.12) 0%, transparent 70%);
+}
+
+.palette-overlay.palette-energetic {
+  background: radial-gradient(ellipse at 50% 50%, rgba(201, 169, 110, 0.12) 0%, transparent 70%);
+}
+
+.palette-overlay.palette-body {
+  background: radial-gradient(ellipse at 50% 50%, rgba(123, 174, 127, 0.12) 0%, transparent 70%);
+}
+
+/* ========== PHILOSOPHY QUOTE WORD REVEAL ========== */
+.philosophy-quote .word {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  margin-right: 0.25em;
+}
+
+.philosophy-quote.words-visible .word {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 /* ========== LOADER ========== */
 .loader {
   position: fixed;
