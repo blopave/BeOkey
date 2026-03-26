@@ -195,7 +195,7 @@ window.addEventListener('keydown', (e) => {
 });
 
 // ========== 3D TILT + SPOTLIGHT ON GLASS CARDS ==========
-const glassCards = document.querySelectorAll('.text-glass, .philosophy-content');
+const glassCards = document.querySelectorAll('.text-glass');
 
 glassCards.forEach(card => {
   card.addEventListener('mousemove', (e) => {
@@ -340,30 +340,12 @@ function detectServiceCategory() {
   }
 }
 
-// ========== PHILOSOPHY QUOTE WORD REVEAL ==========
-const quoteEl = document.querySelector('.philosophy-quote');
-if (quoteEl) {
-  const originalText = quoteEl.textContent;
-  const words = originalText.split(/\s+/);
-  quoteEl.innerHTML = words.map((word, i) =>
-    `<span class="word" style="transition-delay: ${i * 0.06}s">${word}</span>`
-  ).join(' ');
-
-  function checkQuoteReveal() {
-    const rect = quoteEl.getBoundingClientRect();
-    if (rect.left < window.innerWidth * 0.75 && rect.right > 0) {
-      quoteEl.classList.add('words-visible');
-    }
-  }
-
-  // Patch into animation loop
-  const _prevCheckReveals = checkReveals;
-  checkReveals = function() {
-    _prevCheckReveals();
-    checkQuoteReveal();
-    detectServiceCategory();
-  };
-}
+// Patch detectServiceCategory into animation loop
+const _prevCheckReveals = checkReveals;
+checkReveals = function() {
+  _prevCheckReveals();
+  detectServiceCategory();
+};
 
 // ========== HIDE FAB ON CONTACT SECTION ==========
 const fabWhatsapp = document.querySelector('.fab-whatsapp');
@@ -387,4 +369,159 @@ checkReveals = function() {
   _origCheckReveals();
   updateCardParallax();
   updateFabVisibility();
+};
+
+// ========== 3D GALLERY CAROUSEL ==========
+const carouselSlides = document.querySelectorAll('.carousel-slide');
+const prevBtn = document.getElementById('carousel-prev');
+const nextBtn = document.getElementById('carousel-next');
+let currentSlide = 0;
+let autoPlayTimer = null;
+
+function updateCarousel() {
+  const total = carouselSlides.length;
+  carouselSlides.forEach((slide, i) => {
+    slide.classList.remove('is-active', 'is-prev', 'is-next', 'is-far-prev', 'is-far-next');
+    slide.style.opacity = '';
+    slide.style.transform = '';
+
+    const diff = ((i - currentSlide) % total + total) % total;
+    // Map to -half..+half range
+    const offset = diff > total / 2 ? diff - total : diff;
+
+    if (offset === 0) {
+      slide.classList.add('is-active');
+    } else if (offset === -1 || (offset === total - 1)) {
+      slide.classList.add('is-prev');
+    } else if (offset === 1 || (offset === -(total - 1))) {
+      slide.classList.add('is-next');
+    } else if (offset === -2 || offset === total - 2) {
+      slide.classList.add('is-far-prev');
+    } else if (offset === 2 || offset === -(total - 2)) {
+      slide.classList.add('is-far-next');
+    } else {
+      // Hidden slides
+      slide.style.opacity = '0';
+      slide.style.transform = 'translate(-50%, -50%) scale(0.4)';
+    }
+  });
+}
+
+function nextSlide() {
+  currentSlide = (currentSlide + 1) % carouselSlides.length;
+  updateCarousel();
+}
+
+function prevSlide() {
+  currentSlide = (currentSlide - 1 + carouselSlides.length) % carouselSlides.length;
+  updateCarousel();
+}
+
+if (prevBtn && nextBtn) {
+  prevBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    prevSlide();
+    resetAutoPlay();
+  });
+
+  nextBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    nextSlide();
+    resetAutoPlay();
+  });
+}
+
+function resetAutoPlay() {
+  clearInterval(autoPlayTimer);
+  autoPlayTimer = setInterval(nextSlide, 4000);
+}
+
+// Touch swipe on carousel
+const carouselEl = document.getElementById('gallery-carousel');
+if (carouselEl) {
+  let carouselTouchX = 0;
+  carouselEl.addEventListener('touchstart', (e) => {
+    carouselTouchX = e.touches[0].clientX;
+  }, { passive: true });
+
+  carouselEl.addEventListener('touchend', (e) => {
+    const diff = carouselTouchX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 40) {
+      if (diff > 0) nextSlide();
+      else prevSlide();
+      resetAutoPlay();
+    }
+  }, { passive: true });
+}
+
+// ========== CAROUSEL DOT INDICATORS ==========
+const dotsContainer = document.getElementById('carousel-dots');
+if (dotsContainer && carouselSlides.length > 0) {
+  carouselSlides.forEach((_, i) => {
+    const dot = document.createElement('button');
+    dot.className = 'carousel-dot-indicator' + (i === 0 ? ' is-active' : '');
+    dot.setAttribute('aria-label', `Imagen ${i + 1}`);
+    dot.addEventListener('click', () => {
+      currentSlide = i;
+      updateCarousel();
+      updateDots();
+      resetAutoPlay();
+    });
+    dotsContainer.appendChild(dot);
+  });
+}
+
+function updateDots() {
+  if (!dotsContainer) return;
+  const dots = dotsContainer.querySelectorAll('.carousel-dot-indicator');
+  dots.forEach((dot, i) => {
+    dot.classList.toggle('is-active', i === currentSlide);
+  });
+}
+
+// Patch updateCarousel to also update dots
+const _origUpdateCarousel = updateCarousel;
+updateCarousel = function() {
+  _origUpdateCarousel();
+  updateDots();
+};
+
+// Initialize
+if (carouselSlides.length > 0) {
+  updateCarousel();
+  autoPlayTimer = setInterval(nextSlide, 4000);
+}
+
+// ========== ACTIVE NAV LINK TRACKING ==========
+const navLinks = document.querySelectorAll('.navbar-links a[href^="#"]');
+const sectionIds = Array.from(navLinks).map(a => a.getAttribute('href').slice(1));
+
+function updateActiveNav() {
+  if (isMobile()) return;
+
+  const centerX = window.innerWidth / 2;
+  let activeId = null;
+
+  // Find which section is in the center of viewport
+  for (const id of sectionIds) {
+    const el = document.getElementById(id);
+    if (!el) continue;
+    const rect = el.getBoundingClientRect();
+    if (rect.left <= centerX && rect.right >= centerX) {
+      activeId = id;
+      break;
+    }
+  }
+
+  navLinks.forEach(link => {
+    const href = link.getAttribute('href').slice(1);
+    link.classList.toggle('is-active', href === activeId);
+  });
+}
+
+// Patch into main animation loop
+const _finalCheckReveals = checkReveals;
+checkReveals = function() {
+  _finalCheckReveals();
+  updateActiveNav();
 };
