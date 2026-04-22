@@ -1671,6 +1671,48 @@ img {
   color: var(--gold-soft);
 }
 
+/* Designer credit */
+.blopa-credit {
+  position: absolute;
+  bottom: 2.5rem;
+  left: 3rem;
+  font-family: 'Jost', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 300;
+  letter-spacing: 0.1em;
+  color: var(--gold);
+  text-decoration: none;
+  opacity: 0;
+  transition: opacity 0.4s ease, letter-spacing 0.4s ease;
+  animation: fadeUp 0.8s ease 3.6s forwards;
+}
+
+.blopa-credit:hover {
+  opacity: 1 !important;
+  color: var(--gold-deep);
+  letter-spacing: 0.14em;
+}
+
+.blopa-mark {
+  font-family: 'Space Grotesk', 'Jost', sans-serif;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+.blopa-credit--footer {
+  position: static;
+  display: inline-block;
+  margin-top: 1.2rem;
+  font-size: 0.85rem;
+  opacity: 1;
+  color: rgba(201, 169, 110, 0.5);
+  animation: none;
+}
+
+.blopa-credit--footer:hover {
+  color: var(--gold);
+}
+
 /* ========== FLOATING WHATSAPP CTA ========== */
 .fab-whatsapp {
   position: fixed;
@@ -1936,6 +1978,12 @@ img {
   }
 
   .hero-scroll-hint { display: none; }
+
+  .blopa-credit {
+    bottom: 1.5rem;
+    left: 1.5rem;
+    font-size: 0.65rem;
+  }
 
   .carousel-caption {
     font-size: 0.6rem;
